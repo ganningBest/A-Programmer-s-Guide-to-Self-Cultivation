@@ -152,7 +152,7 @@
 
 **支付宝赞助**
 
-![支付宝收款码](assets/images/alipay-qr.jpg)
+
 
 *扫码支持项目发展*
 
