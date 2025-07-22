@@ -1,0 +1,81 @@
+# 程序员修心指南 - Git忽略文件
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PyCharm 相关文件（排除）
+data/
+*.exe
+*.dll
+*.ico
+*.bat
+*.ps1
+*.db
+*.vmoptions
+Uninstall.exe
+WinProcessListHelper.exe
+WinShellIntegrationBridge.dll
+brokenPlugins.db
+defender-exclusions.ps1
+elevator.exe
+format.bat
+fsnotifier*
+idea.properties
+inspect.bat
+jetbrains_client64.exe*
+launcher.exe
+ltedit.bat
+msvcp140.dll
+pycharm.bat
+pycharm.ico
+pycharm.svg
+pycharm64.exe*
+remote-dev-server.exe
+restarter.exe
+ttyfix
+wslhash
+wslproxy
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# 备份文件
+*.bak
+*.backup

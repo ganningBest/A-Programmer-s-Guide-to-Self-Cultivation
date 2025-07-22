@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程序员心理健康自测工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .welcome-card {
+            text-align: center;
+        }
+
+        .welcome-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .rating-scale {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .rating-scale h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .scale-item {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 5px 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .question-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .rating-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .rating-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .results-card {
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-score {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .status-good { border-left-color: #28a745; }
+        .status-fair { border-left-color: #ffc107; }
+        .status-poor { border-left-color: #fd7e14; }
+        .status-bad { border-left-color: #dc3545; }
+
+        .recommendations {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .recommendations h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .recommendations li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .rating-buttons {
+                flex-direction: column;
+            }
+            
+            .rating-btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧘‍♂️ 程序员心理健康自测</h1>
+            <p>关注心理健康，提升生活质量</p>
+        </div>
+
+        <!-- 欢迎页面 -->
+        <div class="card welcome-card" id="welcome">
+            <h2>欢迎使用心理健康自测工具</h2>
+            <p>这个工具将帮助您快速评估心理健康状态。请根据最近两周的情况，诚实回答以下问题。</p>
+            
+            <div class="rating-scale">
+                <h3>评分说明：</h3>
+                <div class="scale-item">0 = 从不</div>
+                <div class="scale-item">1 = 偶尔</div>
+                <div class="scale-item">2 = 有时</div>
+                <div class="scale-item">3 = 经常</div>
+                <div class="scale-item">4 = 总是</div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="startAssessment()">开始评估</button>
+        </div>
+
+        <!-- 评估页面 -->
+        <div class="card" id="assessment" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div id="questionSections">
+                <!-- 问题将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousSection()" disabled>上一步</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextSection()">下一步</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="card results-card" id="results">
+            <h2>📊 评估结果</h2>
+            <div id="overallResult"></div>
+            <div id="detailedResults"></div>
+            <div id="recommendations"></div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="restartAssessment()">重新评估</button>
+                <button class="btn btn-secondary" onclick="downloadResults()">下载结果</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 评估问题数据
+        const assessmentData = {
+            stress: {
+                title: "压力水平评估",
+                questions: [
+                    "我感到工作压力很大",
+                    "我经常担心工作任务无法完成", 
+                    "我难以在工作后放松",
+                    "我感到被工作压垮",
+                    "我经常加班到很晚"
+                ]
+            },
+            mood: {
+                title: "情绪状态评估",
+                questions: [
+                    "我感到沮丧或抑郁",
+                    "我对平时感兴趣的事物失去兴趣",
+                    "我感到焦虑或紧张",
+                    "我容易发怒或烦躁",
+                    "我感到孤独"
+                ]
+            },
+            cognitive: {
+                title: "认知功能评估",
+                questions: [
+                    "我难以集中注意力",
+                    "我记忆力下降",
+                    "我决策困难",
+                    "我学习新技术感到困难",
+                    "我创造力下降"
+                ]
+            },
+            physical: {
+                title: "身体症状评估",
+                questions: [
+                    "我感到疲劳或精力不足",
+                    "我睡眠质量差",
+                    "我有头痛或身体疼痛",
+                    "我食欲发生变化",
+                    "我经常生病"
+                ]
+            },
+            social: {
+                title: "社交关系评估",
+                questions: [
+                    "我避免与同事交流",
+                    "我不愿参加团队活动",
+                    "我感到人际关系紧张",
+                    "我难以表达自己的想法",
+                    "我倾向于独自承担问题"
+                ]
+            }
+        };
+
+        let currentSection = 0;
+        let responses = {};
+        const sectionKeys = Object.keys(assessmentData);
+
+        function startAssessment() {
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('assessment').style.display = 'block';
+            generateQuestions();
+            updateProgress();
+        }
+
+        function generateQuestions() {
+            const container = document.getElementById('questionSections');
+            container.innerHTML = '';
+
+            sectionKeys.forEach((key, index) => {
+                const section = assessmentData[key];
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'question-section';
+                sectionDiv.id = `section-${index}`;
+                
+                if (index === 0) sectionDiv.classList.add('active');
+
+                sectionDiv.innerHTML = `
+                    <h3 class="section-title">${section.title}</h3>
+                    ${section.questions.map((question, qIndex) => `
+                        <div class="question">
+                            <div class="question-text">${qIndex + 1}. ${question}</div>
+                            <div class="rating-buttons">
+                                ${[0, 1, 2, 3, 4].map(rating => `
+                                    <button class="rating-btn" 
+                                            onclick="selectRating('${key}', ${qIndex}, ${rating})"
+                                            data-section="${key}" 
+                                            data-question="${qIndex}" 
+                                            data-rating="${rating}">
+                                        ${rating}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function selectRating(section, questionIndex, rating) {
+            if (!responses[section]) responses[section] = {};
+            responses[section][questionIndex] = rating;
+
+            // 更新按钮状态
+            const buttons = document.querySelectorAll(`[data-section="${section}"][data-question="${questionIndex}"]`);
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = currentSection === 0;
+
+            if (currentSection === sectionKeys.length - 1) {
+                const allAnswered = checkAllAnswered();
+                nextBtn.textContent = '查看结果';
+                nextBtn.disabled = !allAnswered;
+            } else {
+                nextBtn.textContent = '下一步';
+                nextBtn.disabled = false;
+            }
+        }
+
+        function checkAllAnswered() {
+            return sectionKeys.every(key => {
+                const sectionQuestions = assessmentData[key].questions.length;
+                return responses[key] && Object.keys(responses[key]).length === sectionQuestions;
+            });
+        }
+
+        function nextSection() {
+            if (currentSection === sectionKeys.length - 1) {
+                showResults();
+                return;
+            }
+
+            document.getElementById(`section-${currentSection}`).classList.remove('active');
+            currentSection++;
+            document.getElementById(`section-${currentSection}`).classList.add('active');
+            updateProgress();
+            updateNavigationButtons();
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                document.getElementById(`section-${currentSection}`).classList.remove('active');
+                currentSection--;
+                document.getElementById(`section-${currentSection}`).classList.add('active');
+                updateProgress();
+                updateNavigationButtons();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentSection + 1) / sectionKeys.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            const results = {};
+            let totalScore = 0;
+            let maxScore = 0;
+
+            sectionKeys.forEach(key => {
+                const sectionResponses = responses[key];
+                const sectionScore = Object.values(sectionResponses).reduce((sum, score) => sum + score, 0);
+                const sectionMaxScore = assessmentData[key].questions.length * 4;
+                
+                results[key] = {
+                    score: sectionScore,
+                    maxScore: sectionMaxScore,
+                    percentage: (sectionScore / sectionMaxScore) * 100
+                };
+
+                totalScore += sectionScore;
+                maxScore += sectionMaxScore;
+            });
+
+            results.total = {
+                score: totalScore,
+                maxScore: maxScore,
+                percentage: (totalScore / maxScore) * 100
+            };
+
+            return results;
+        }
+
+        function interpretResults(results) {
+            const totalPercentage = results.total.percentage;
+            
+            let overall;
+            if (totalPercentage <= 25) {
+                overall = { level: "良好", description: "心理健康状态良好，继续保持！", color: "good", emoji: "🟢" };
+            } else if (totalPercentage <= 50) {
+                overall = { level: "一般", description: "需要关注某些方面，建议采取一些改进措施。", color: "fair", emoji: "🟡" };
+            } else if (totalPercentage <= 75) {
+                overall = { level: "较差", description: "存在明显的心理健康问题，建议寻求专业帮助。", color: "poor", emoji: "🟠" };
+            } else {
+                overall = { level: "很差", description: "心理健康状况令人担忧，强烈建议立即咨询专业人士。", color: "bad", emoji: "🔴" };
+            }
+
+            return { overall, results };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            const interpretation = interpretResults(results);
+            
+            document.getElementById('assessment').style.display = 'none';
+            document.getElementById('results').classList.add('show');
+
+            displayResults(interpretation);
+            displayRecommendations(interpretation.overall.level);
+        }
+
+        function displayResults(interpretation) {
+            const { overall, results } = interpretation;
+            
+            // 总体结果
+            document.getElementById('overallResult').innerHTML = `
+                <div class="result-item status-${overall.color}">
+                    <div>
+                        <strong>${overall.emoji} 总体评估: ${overall.level}</strong>
+                        <div>${overall.description}</div>
+                    </div>
+                    <div class="result-score">${results.total.score}/${results.total.maxScore} (${overall.percentage || results.total.percentage.toFixed(1)}%)</div>
+                </div>
+            `;
+
+            // 详细结果
+            const categoryNames = {
+                stress: "压力水平",
+                mood: "情绪状态",
+                cognitive: "认知功能", 
+                physical: "身体症状",
+                social: "社交关系"
+            };
+
+            const detailedHtml = sectionKeys.map(key => {
+                const result = results[key];
+                const percentage = result.percentage;
+                let status, emoji;
+                
+                if (percentage <= 25) {
+                    status = "good"; emoji = "🟢";
+                } else if (percentage <= 50) {
+                    status = "fair"; emoji = "🟡";
+                } else if (percentage <= 75) {
+                    status = "poor"; emoji = "🟠";
+                } else {
+                    status = "bad"; emoji = "🔴";
+                }
+
+                return `
+                    <div class="result-item status-${status}">
+                        <div>${emoji} ${categoryNames[key]}</div>
+                        <div class="result-score">${result.score}/${result.maxScore} (${percentage.toFixed(1)}%)</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('detailedResults').innerHTML = `
+                <h3>📈 各维度详情</h3>
+                ${detailedHtml}
+            `;
+        }
+
+        function displayRecommendations(level) {
+            const recommendations = {
+                "良好": [
+                    "继续保持良好的工作生活平衡",
+                    "定期进行自我评估",
+                    "帮助其他同事维护心理健康",
+                    "保持健康的生活习惯"
+                ],
+                "一般": [
+                    "学习压力管理技巧",
+                    "改善睡眠质量",
+                    "增加运动和放松活动",
+                    "寻求同事或朋友的支持"
+                ],
+                "较差": [
+                    "考虑寻求专业心理咨询",
+                    "调整工作强度和节奏",
+                    "学习情绪调节技巧",
+                    "建立更好的支持网络"
+                ],
+                "很差": [
+                    "立即寻求专业心理健康帮助",
+                    "考虑暂时减少工作压力",
+                    "告知信任的人您的状况",
+                    "关注自杀预防资源"
+                ]
+            };
+
+            const recs = recommendations[level] || recommendations["一般"];
+            
+            document.getElementById('recommendations').innerHTML = `
+                <div class="recommendations">
+                    <h3>💡 改进建议</h3>
+                    <ul>
+                        ${recs.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                    <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                        <strong>更多资源：</strong><br>
+                        • 完整指南: <a href="https://github.com/yourusername/程序员修心指南" target="_blank">程序员修心指南</a><br>
+                        • 专业帮助: 如需专业心理咨询，请联系当地心理健康机构
+                    </p>
+                </div>
+            `;
+        }
+
+        function restartAssessment() {
+            currentSection = 0;
+            responses = {};
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('welcome').style.display = 'block';
+        }
+
+        function downloadResults() {
+            const results = calculateResults();
+            const interpretation = interpretResults(results);
+            
+            const data = {
+                timestamp: new Date().toISOString(),
+                results: results,
+                interpretation: interpretation
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `心理健康评估结果_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigationButtons();
+        });
+    </script>
+</body>
+</html>
